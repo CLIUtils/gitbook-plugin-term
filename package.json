@@ -4,7 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "homepage": "https://github.com/CLIUtils/gitbook-plugin-term",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "author": {
     "name": "Henry Schreiner",
     "email": "henry.schreiner@uc.edu"
