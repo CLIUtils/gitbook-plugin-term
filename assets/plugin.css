@@ -7,6 +7,12 @@ pre.term {
   position: relative;
 }
 
+pre code.lang-term pre.term {
+  margin:0;
+  padding:0;
+  font-size: 1em;
+}
+
 pre.term code {
   display: block;
   margin: 1em 2em 0 1em;

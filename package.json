@@ -26,6 +26,7 @@
     "gitbook": ">3.0.0"
   },
   "dependencies": {
+    "highlight.js": "9.8.0",
     "xregexp": "3.2.0"
   },
   "gitbook": {
@@ -59,7 +60,7 @@
         "type": "string"
       },
       "lineStyles":{
-          "default": false,
+          "default": true,
           "title": "Process beginning of line messages (warn, error)",
           "type":"boolean"
       }
