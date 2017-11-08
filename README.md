@@ -1,18 +1,10 @@
 # Term plugin for GitBook
 
-Take it easy. This is not a real term. The aim of this plugin is to simulate a term in which there is a line for the prompt and the command, and multiple lines for the output.
-
-So... why you should use it? It's way easier to catch the attention of your users when the code block looks fancy, isn't it?
-
-## Cool, can I see it working?
-
-The next animated gif shows all the styles you can use:
-
-![term themes](https://github.com/davidmogar/gitbook-plugin-term/blob/resources/images/themes.gif?raw=true)
+This is the term plugin, based on the innovative [terminal](https://github.com/davidmogar/gitbook-plugin-terminal) plugin by David Mogar. However, it is much cleaner and more intuitive to use, and works on all backends.
 
 ## How can I use this plugin?
 
-You only have to edit your book.json and modify it adding something like this:
+Add the following to your gitbook:
 
 ```json
 "plugins" : [ "term" ],
@@ -38,10 +30,10 @@ The following are valid options for either for a block in block mode or the conf
 | `copyButtons` | `true`         | Add the copy button                  |
 | `style`       | `"default"`    | Pick the style (based on term)   |
 | `prompt`      | regexp (below) | The string to search for and replace in block mode |
-| `linestyles`  | `false`        | Add per line styles in block mode    |
+| `linestyles`  | `true`         | Add per line styles (warning and error)    |
 
 
-## New block based auto-colorization
+## Block based auto-colorization
 
 The block based system using the GitBook block system and the keyword `term`. A named-group regular expression picks up the parts of your command line, and can be modified either in your defaults or per-block. This works in all backends, including the GitBook readme (json backend). When using this method, one copy button will be created that copies all commands.
 
@@ -66,40 +58,13 @@ What about an error message?
 ```
 
 
+## Language based method
 
+You can also use a language based method, where you use triple-backticks followed by `term` as the language. This will work inside another block, but will not handle non-default color styles well, nor can you change the defaults.
 
-## Classic token method (website only)
+## Styles
 
-Now, to define your term you will have to create a Markdown code block where the first line will contain the token `**[term]` and after that, the text for the term.
-
-The whole list of tokens is defined here:
-
-* **command**: Command "executed" in the term.
-* **delimiter**: Sequence of characters between the prompt and the command.
-* **error**: Error message.
-* **path**: Directory path shown in the prompt.
-* **prompt**: Prompt of the user.
-* **warning**: Warning message.
-
-The next example shows how to use all of them:
-<pre><code>
-```
-**[term]
-**[prompt foo@joe]**[path ~]**[delimiter  $ ]**[command ./myscript]
-Normal output line. Nothing special here...
-But...
-You can add some colors. What about a warning message?
-**[warning [WARNING] The color depends on the theme. Could look normal too]
-What about an error message?
-**[error [ERROR] This is not the error you are looking for]
-```
-</pre></code>
-
-So, as you can see, a token will be something like `**[token value]` where value can be any text.
-
-## So, what is the actual list of styles?
-
-Terminal has 6 styles:
+Term has 6 styles:
 
 * **default**: Looks just like normal GitBook. Until you hover.
 * **black**: Just that good old black term everybody loves.
@@ -107,11 +72,4 @@ Terminal has 6 styles:
 * **flat**: Oh, flat colors. I love flat colors. Everything looks modern with them.
 * **ubuntu**: Admit it or not, but Ubuntu have a good looking term.
 * **white**: Make your term to blend in with your GitBook.
-
-## Is there anything else I can customize?
-
-Sure! As you can see in the previous examples, there are two more options:
-
-* **copyButtons**: If enabled, handy copy button will appear next to the commands. On click, the command will be copied to the clipboard. (All commands in block in block mode)
-* **fade**: When enabled, every time the cursor is over the term, the text will be fade out to highlight the command.
 
