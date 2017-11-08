@@ -1,144 +1,86 @@
 require(['gitbook', 'jQuery'], function(gitbook, $) {
 
-  const TERMINAL_HOOK = '**[terminal]'
+  const TERMINAL_HOOK = '**[term]'
+  const TERMINAL_HOOK_EXT = '**[term '
 
-  var pluginConfig = {};
-  var regex = /\*\*\[(command|delimiter|error|path|prompt|warning) ((?:[^\]]+|\](?!\*\*|$)|)+)]/
-  var timeouts = {};
-
-  function addCopyButtons(block) {
-    block.find('span.t-command').each(function(index) {
-      command = $(this).attr('data-command', index + 1);
-      line = command.parent();
-      line.closest('pre').append(
-        $('<i class="fa fa-clone t-copy"></i>')
-          .attr('data-command', index + 1)
-          .click(function() {
-            copyCommand($(this));
-          })
-          .css({ top: line.position().top + 'px' })
-      );
-    });
+  var XRegExp = require('xregexp');
+  
+  function processLine(line, config) {
+      var str = "";
+      var commands = "";
+  
+      re = XRegExp(config.prompt);
+  
+      if(re.test(line)) {
+          var parts = XRegExp.exec(line, re);
+          str += `<span class="t-line t-prompt-line">`
+          for(var i=0; i<re.xregexp.captureNames.length; i++) {
+              var name = re.xregexp.captureNames[i];
+              if(parts[name] != "") {
+                  str += `<span class="t-${name}">${parts[name]}</span>`
+              }
+          }
+          str += '\n';
+  
+          if(config.copyButtons) {
+              if(!parts.hasOwnProperty('command')) {
+                  throw Error("Cannot use copyButtons if command does not exist as a named group in the prompt regexp!");
+              }
+              commands += parts.command.replace(/"/g,'&quot;') + '\n';
+          }
+      } else {
+          if(config.lineStyles && line.startsWith("[warning]")) {
+              str += '<span class="t-line t-warning">';
+              str += line.replace("[warning]","") + '\n';
+          } else if (config.lineStyles && line.startsWith("[error]")) {
+              str += '<span class="t-line t-error">';
+              str += line.replace("[error]","") + '\n';
+          } else {
+              str += '<span class="t-line">';
+              str += line + '\n';
+          }
+      }
+      str += '</span>';
+  
+  
+      return {"line":str, "command":commands};
   }
-
-  function addCopyTextarea() {
-
-    /* Add also the text area that will allow to copy */
-    $('body').append('<textarea id="t-textarea" />');
+  
+  function processBlock(block, options = {}) {
+      var book          = this;
+      /* Make a copy */
+      var orig_config   = Object.assign({}, book.config.get('pluginsConfig.term', {}));
+      /* Merge dictionaries */
+      var config        = Object.assign(orig_config, options);
+  
+      var str =  `<pre class="term t-${config.style}${config.fade ? ' t-fade' : ''}">`;
+      var body = block.body.trim().split('\n');
+      var lines = "";
+      var commands = ""
+      for(i=0; i<body.length; i++) {
+          var tmp = processLine(body[i], config);
+          lines += tmp.line;
+          commands += tmp.command;
+      }
+  
+      /* JSON backend (README) should not have buttons (it does not have js or styles) */
+      var isweb = book.output.name == 'website';
+      if(isweb && config.copyButtons && commands != "") {
+          str += `<button class="btn t-copy" data-clipboard-text="${commands.trim()}"><svg class="octicon octicon-clippy" viewBox="0 0 14 16" version="1.1" width="14" height="14" aria-hidden="true"><path fill-rule="evenodd" d="M2 13h4v1H2v-1zm5-6H2v1h5V7zm2 3V8l-3 3 3 3v-2h5v-2H9zM4.5 9H2v1h2.5V9zM2 12h2.5v-1H2v1zm9 1h1v2c-.02.28-.11.52-.3.7-.19.18-.42.28-.7.3H1c-.55 0-1-.45-1-1V4c0-.55.45-1 1-1h3c0-1.11.89-2 2-2 1.11 0 2 .89 2 2h3c.55 0 1 .45 1 1v5h-1V6H1v9h10v-2zM2 5h8c0-.55-.45-1-1-1H8c-.55 0-1-.45-1-1s-.45-1-1-1-1 .45-1 1-.45 1-1 1H3c-.55 0-1 .45-1 1z"></path></svg></button>`
+      }
+  
+      str += lines + '</pre>';
+      return str;
   }
-
-  function copyCommand(button) {
-    pre = button.parent();
-    command = pre.find('span.t-command[data-command=' + button.attr('data-command') + ']');
-    textarea = $('#t-textarea');
-    textarea.val(command.text());
-    textarea.focus();
-    textarea.select();
-    document.execCommand('copy');
-    command.focus();
-    updateCopyButton(button);
-  }
-
-  function initializePlugin(config) {
-    pluginConfig = config.terminal;
-  }
-
-  function format_terminal_block(block) {
-    pre = block.parent('pre')
-    pre.addClass('terminal t-' + pluginConfig.style);
-
-    if (pluginConfig.fade) {
-      pre.addClass('t-fade');
-    }
-
-    /* Remove hook and parse text */
-    text = block.html().replace(TERMINAL_HOOK, '');
-    text = parse_lines(text);
-    text = parse_tokens(text);
-
-    /* Update block text */
-    block.html(text);
-
-    /* Remove extra lines after parsing*/
-    remove_extra_lines(block);
-
-    /* Mark prompt lines */
-    block.find('span.t-command').parent('span.t-line').addClass('t-prompt-line');
-
-    if (pluginConfig.copyButtons) {
-
-      /*
-       * Add copy buttons once the document is ready. Otherwise the
-       * value for lines' top position will be wrong.
-       */
-      $(document).ready(function() {
-        addCopyButtons(block);
-      });
-    }
-  }
-
-  function parse_lines(text) {
-    output = '';
-    open_tag = true;
-
-    for (let line of text.split('\n')) {
-      line = line + '\n'; // Preserve break lines for the regex to work
-      output += open_tag? '<span class="t-line">' + line : line;
-      open_tag = line.endsWith('\\\n')? false : output += '</span>', true
-    }
-
-    return output;
-  }
-
-  function parse_tokens(text) {
-    return text.replace(new RegExp(regex, 'gm'), function(match, token, value) {
-      return '<span class="t-' + token + '">' + value + '</span>';
-    });
-  }
-
-  function remove_extra_lines(block) {
-    $(block).children('span').each(function() {
-      return remove_if_empty($(this));
-    });
-
-    remove_if_empty($('span', block).last())
-  }
-
-  function remove_if_empty(element) {
-    removed = false;
-
-    if (!$.trim(element.html())) {
-      element.remove();
-      removed = true;
-    }
-
-    return removed;
-  }
-
-  function updateCopyButton(button) {
-    id = button.attr('data-command');
-    button.removeClass('fa-clone').addClass('fa-check');
-
-    // Clear timeout
-    if (id in timeouts) {
-      clearTimeout(timeouts[id]);
-    }
-    timeouts[id] = window.setTimeout(function() {
-      button.removeClass('fa-check').addClass('fa-clone');
-    }, 1000);
-  }
-
-  gitbook.events.bind('start', function(e, config) {
-    initializePlugin(config);
-
-    if (pluginConfig.copyButtons) {
-      addCopyTextarea();
-    }
-  });
 
   gitbook.events.bind('page.change', function() {
     $('code:contains(' + TERMINAL_HOOK + ')').each(function() {
-      format_terminal_block($(this));
+      $(this).html().replace(TERMINAL_HOOK, '');
+      processBlock($(this));
+    });
+    $('code:contains(' + TERMINAL_HOOK_EXT + ')').each(function() {
+      var options = {};
+      processBlock($(this, options));
     });
   });
 

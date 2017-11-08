@@ -44,11 +44,11 @@ function processLine(line, config) {
 function processBlock(block) {
     var book          = this;
     /* Make a copy */
-    var orig_config   = Object.assign({}, book.config.get('pluginsConfig.terminal', {}));
+    var orig_config   = Object.assign({}, book.config.get('pluginsConfig.term', {}));
     /* Merge dictionaries */
     var config        = Object.assign(orig_config, block.kwargs);
 
-    var str =  `<pre class="terminal t-${config.style}${config.fade ? ' t-fade' : ''}">`;
+    var str =  `<pre class="term t-${config.style}${config.fade ? ' t-fade' : ''}">`;
     var body = block.body.trim().split('\n');
     var lines = "";
     var commands = ""
@@ -88,7 +88,7 @@ module.exports = {
     ]
   },
   blocks: {
-      terminal: {
+      term: {
           process: processBlock
       }
   }

@@ -1,5 +1,5 @@
 
-pre.terminal {
+pre.term {
   font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
   overflow-x: hidden;
   padding: .85em 1em;
@@ -7,35 +7,35 @@ pre.terminal {
   position: relative;
 }
 
-pre.terminal code {
+pre.term code {
   display: block;
   margin: 1em 2em 0 1em;
   padding-bottom: 1em;
   overflow-x: auto;
 }
 
-pre.terminal span.t-line {
+pre.term span.t-line {
   display: block;
 }
 
-pre.terminal.t-fade span.t-line:not(.t-prompt-line),
-pre.terminal.t-fade span.t-delimiter,
-pre.terminal.t-fade span.t-path,
-pre.terminal.t-fade span.t-pathsep,
-pre.terminal.t-fade span.t-prompt {
+pre.term.t-fade span.t-line:not(.t-prompt-line),
+pre.term.t-fade span.t-delimiter,
+pre.term.t-fade span.t-path,
+pre.term.t-fade span.t-pathsep,
+pre.term.t-fade span.t-prompt {
   transition: opacity 0.3s ease-in-out;
 }
 
-pre.terminal.t-fade:hover span.t-line:not(.t-prompt-line),
-pre.terminal.t-fade:hover span.t-delimiter,
-pre.terminal.t-fade:hover span.t-path,
-pre.terminal.t-fade:hover span.t-pathsep,
-pre.terminal.t-fade:hover span.t-prompt {
+pre.term.t-fade:hover span.t-line:not(.t-prompt-line),
+pre.term.t-fade:hover span.t-delimiter,
+pre.term.t-fade:hover span.t-path,
+pre.term.t-fade:hover span.t-pathsep,
+pre.term.t-fade:hover span.t-prompt {
   opacity: 0.3;
 }
 
-pre.terminal > button.t-copy,
-pre.terminal > i.t-copy {
+pre.term > button.t-copy,
+pre.term > i.t-copy {
   cursor: pointer;
   margin-top: 0.3em;
   opacity: 0;
@@ -45,8 +45,8 @@ pre.terminal > i.t-copy {
   transition: opacity 0.3s ease-in-out;
 }
 
-pre.terminal:hover > button.t-copy,
-pre.terminal:hover > i.t-copy {
+pre.term:hover > button.t-copy,
+pre.term:hover > i.t-copy {
   opacity: 1;
 }
 
@@ -57,113 +57,113 @@ pre.terminal:hover > i.t-copy {
   width: 0;
 }
 
-pre.terminal.t-black {
+pre.term.t-black {
   background-color: #222;
   color: #dedede;
 }
 
-pre.terminal.t-black .t-prompt {
+pre.term.t-black .t-prompt {
   font-weight: bold;
 }
 
-pre.terminal.t-classic {
+pre.term.t-classic {
   background-color: black;
   color: lawngreen;
 }
 
-pre.terminal.t-classic .t-error {
+pre.term.t-classic .t-error {
   color: red;
 }
 
-pre.terminal.t-classic .t-warning {
+pre.term.t-classic .t-warning {
   color: orange;
 }
 
-pre.terminal.t-flat {
+pre.term.t-flat {
   background-color: #2b3d50;
   color: #dedede;
 }
 
-pre.terminal.t-flat .t-delimiter {
+pre.term.t-flat .t-delimiter {
   color: #60b0e5;
 }
 
-pre.terminal.t-flat .t-error {
+pre.term.t-flat .t-error {
   color: #f55
 }
 
-pre.terminal.t-flat .t-prompt {
+pre.term.t-flat .t-prompt {
   color: #28c66e;
 }
 
-pre.terminal.t-flat .t-warning {
+pre.term.t-flat .t-warning {
   color: #d93;
 }
 
-pre.terminal.t-ubuntu {
+pre.term.t-ubuntu {
   background-color: #300b24;
   color: #b8c4c5;
 }
 
-pre.terminal.t-ubuntu .t-error {
+pre.term.t-ubuntu .t-error {
   color: #e22227;
 }
 
-pre.terminal.t-ubuntu .t-path {
+pre.term.t-ubuntu .t-path {
   color: #475ca0;
 }
 
-pre.terminal.t-ubuntu .t-prompt {
+pre.term.t-ubuntu .t-prompt {
   color: #84cc40;
 }
 
-pre.terminal.t-ubuntu .t-warning {
+pre.term.t-ubuntu .t-warning {
   color: #d93;
 }
 
-pre.terminal.t-white {
+pre.term.t-white {
   background-color: white;
   color: #333;
 }
 
-pre.terminal.t-white .t-error {
+pre.term.t-white .t-error {
   color: #e22227;
 }
 
-pre.terminal.t-white .t-path {
+pre.term.t-white .t-path {
   color: #475ca0;
 }
 
-pre.terminal.t-white .t-prompt {
+pre.term.t-white .t-prompt {
   color: #4caf50;
 }
 
-pre.terminal.t-white .t-warning {
+pre.term.t-white .t-warning {
   color: #d93;
 }
 
 
-pre.terminal.t-default {
+pre.term.t-default {
   background-color: #f7f7f7;
   color: #333;
 }
 
-pre.terminal.t-default .t-error {
+pre.term.t-default .t-error {
   color: #e22227;
 }
 
-pre.terminal.t-default .t-path {
+pre.term.t-default .t-path {
   color: #475ca0;
 }
 
-pre.terminal.t-default .t-prompt {
+pre.term.t-default .t-prompt {
   color: #4caf50;
 }
 
-pre.terminal.t-default .t-warning {
+pre.term.t-default .t-warning {
   color: #d93;
 }
 
-pre.terminal.t-default .t-delimiter {
+pre.term.t-default .t-delimiter {
   color: #4090b5;
 }
